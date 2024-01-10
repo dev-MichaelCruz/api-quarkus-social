@@ -2,10 +2,9 @@ package com.michaelcruz.quarkusocial.domain.model;
 
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.validator.internal.util.privilegedactions.GetResource;
 
 @Entity
-@Table(name = "folowers")
+@Table(name = "followers")
 @Data
 public class Follower {
 
@@ -18,6 +17,7 @@ public class Follower {
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "follower_id")
     private User follower;
+
 }
