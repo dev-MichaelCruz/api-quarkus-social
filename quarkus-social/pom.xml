@@ -28,6 +28,11 @@
     </dependencies>
   </dependencyManagement>
   <dependencies>
+<!--    <dependency>-->
+<!--      <groupId>javax.json.bind</groupId>-->
+<!--      <artifactId>javax.json.bind-api</artifactId>-->
+<!--      <version>1.0</version>-->
+<!--    </dependency>-->
     <dependency>
       <groupId>org.projectlombok</groupId>
       <artifactId>lombok</artifactId>
@@ -55,7 +60,7 @@
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
-      <artifactId>quarkus-resteasy-jsonb</artifactId>
+      <artifactId>quarkus-resteasy-jackson</artifactId>
     </dependency>
     <dependency>
       <groupId>io.quarkus</groupId>
