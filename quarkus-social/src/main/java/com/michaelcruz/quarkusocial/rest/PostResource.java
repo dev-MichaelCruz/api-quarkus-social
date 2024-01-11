@@ -19,8 +19,8 @@ import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Path("/users/{userId}/posts")
-@Consumes(MediaType.APPLICATION_JSON)
-@Produces(MediaType.APPLICATION_JSON)
+//@Consumes(MediaType.APPLICATION_JSON)
+//@Produces(MediaType.APPLICATION_JSON)
 public class PostResource {
 
     private UserRepository userRepository;
