@@ -19,8 +19,8 @@ import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 
 @Path("/users/{userId}/posts")
-//@Consumes(MediaType.APPLICATION_JSON)
-//@Produces(MediaType.APPLICATION_JSON)
+@Consumes(MediaType.APPLICATION_JSON)
+@Produces(MediaType.APPLICATION_JSON)
 public class PostResource {
 
     private UserRepository userRepository;
@@ -60,7 +60,6 @@ public class PostResource {
             @HeaderParam("followerId") Long followerId) {
 
         User user = userRepository.findById(userId);
-
         if(user == null){
             return Response.status(Response.Status.NOT_FOUND).build();
         }
@@ -68,21 +67,19 @@ public class PostResource {
         if(followerId == null){
             return Response
                     .status(Response.Status.BAD_REQUEST)
-                    .entity("You Forgot The HeaderFollowerId")
+                    .entity("You Forgot The Header FollowerId")
                     .build();
         }
 
         User follower = userRepository.findById(followerId);
-
         if(follower == null){
             return Response
-                    .status(Response.Status.BAD_REQUEST)
-                    .entity("Inexistent FollowerId")
+                    .status(Response.Status.NOT_FOUND)
+                    .entity("Nonexistent FollowerId")
                     .build();
         }
 
         boolean follows = followerRepository.follows(follower, user);
-
         if(!follows){
             return Response.status(Response.Status.FORBIDDEN)
                     .entity("You Can't See This Posts")
@@ -99,5 +96,6 @@ public class PostResource {
 
         return Response.ok(postResponseList).build();
     }
+
 
 }
