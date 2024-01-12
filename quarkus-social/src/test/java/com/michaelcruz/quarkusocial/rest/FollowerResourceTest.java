@@ -11,13 +11,12 @@ import io.restassured.http.ContentType;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
-import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.given;
-import static io.restassured.RestAssured.responseSpecification;
 import static org.junit.jupiter.api.Assertions.*;
+
 @QuarkusTest
 @TestHTTPEndpoint(FollowerResource.class)
 class FollowerResourceTest {
