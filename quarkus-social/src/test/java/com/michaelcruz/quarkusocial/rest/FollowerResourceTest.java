@@ -1,6 +1,8 @@
 package com.michaelcruz.quarkusocial.rest;
 
+import com.michaelcruz.quarkusocial.domain.model.Follower;
 import com.michaelcruz.quarkusocial.domain.model.User;
+import com.michaelcruz.quarkusocial.domain.repository.FollowerRepository;
 import com.michaelcruz.quarkusocial.domain.repository.UserRepository;
 import com.michaelcruz.quarkusocial.rest.dto.FollowerRequest;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
@@ -11,11 +13,10 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.core.Response;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 import static io.restassured.RestAssured.given;
+import static io.restassured.RestAssured.responseSpecification;
 import static org.junit.jupiter.api.Assertions.*;
 @QuarkusTest
 @TestHTTPEndpoint(FollowerResource.class)
@@ -23,6 +24,9 @@ class FollowerResourceTest {
 
     @Inject
     UserRepository userRepository;
+
+    @Inject
+    FollowerRepository followerRepository;
 
     Long userId;
     Long followerId;
@@ -44,6 +48,12 @@ class FollowerResourceTest {
         follower.setAge(31);
         userRepository.persist(follower);
         followerId = follower.getId();
+
+        //Create a follower to user
+        var followerEntity = new Follower();
+        followerEntity.setFollower(follower);
+        followerEntity.setUser(user);
+        followerRepository.persist(followerEntity);
     }
 
     @Test
@@ -66,7 +76,7 @@ class FollowerResourceTest {
 
     @Test
     @DisplayName("should return 404 when userId doesn't exists")
-    public void userNotFoundTest() {
+    public void userNotFoundWhenTryingToFollowTest() {
 
         var body = new FollowerRequest();
         body.setFollowerId(userId);
@@ -95,6 +105,68 @@ class FollowerResourceTest {
                 .pathParam("userId", userId)
         .when()
                 .put()
+        .then()
+                .statusCode(Response.Status.NO_CONTENT.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("should return 404 on list user followers and userId doesn't exists")
+    public void userNotFoundWhenListingFollowersTest() {
+
+        var nonexistentUserId= 0;
+
+        given()
+                .contentType(ContentType.JSON)
+                .pathParam("userId", nonexistentUserId)
+        .when()
+                .get()
+        .then()
+                .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("should list a user's followers")
+    public void listFollowersTest(){
+        var response =
+                given()
+                        .contentType(ContentType.JSON)
+                        .pathParam("userId", userId)
+                .when()
+                        .get()
+                .then()
+                        .extract().response();
+
+        var followersCount = response.jsonPath().get("followersCount");
+        assertEquals(Response.Status.OK.getStatusCode(), response.statusCode());
+        assertEquals(1, followersCount);
+    }
+
+    @Test
+    @DisplayName("should return 404 on unfollow user followers and userId doesn't exists")
+    public void userNotFoundWhenUnfollowingUserTest() {
+
+        var nonexistentUserId= 0;
+
+        given()
+                .contentType(ContentType.JSON)
+                .pathParam("userId", nonexistentUserId)
+                .queryParam("followerId", followerId)
+        .when()
+                .delete()
+        .then()
+                .statusCode(Response.Status.NOT_FOUND.getStatusCode());
+    }
+
+    @Test
+    @DisplayName("should unfollow an user")
+    public void unfollowUserTest() {
+
+        given()
+                .contentType(ContentType.JSON)
+                .pathParam("userId", userId)
+                .queryParam("followerId", followerId)
+        .when()
+                .delete()
         .then()
                 .statusCode(Response.Status.NO_CONTENT.getStatusCode());
     }
