@@ -1,6 +1,7 @@
 # API Quarkus Social
 
-Esta API foi desenvolvida usando a linguagem **Java**, em conjunto com a plataforma **Quarkus** .
+Esta API foi desenvolvida usando a linguagem **Java**, em conjunto com a plataforma **Quarkus**.
+Tem a proposta de uma rede social com seguidores, postagens de texto e relação de usuários e seguidores.
 
 ## Requisitos
 * Maven para gerenciar as dependências do projeto;
